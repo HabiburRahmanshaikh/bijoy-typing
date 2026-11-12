@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7fb">
+  <title>বিজয় বায়ান্ন — টাইপিং শিখি</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img class="brand-mark" src="Img/skill%20development%20course%202026%20(4)-02.png" alt="">
+      <div>
+        <div class="brand-name">বিজয় বায়ান্ন</div>
+        <div class="brand-caption">শুরু থেকে বাংলা টাইপিং শিখি</div>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="lesson-menu-toggle" id="lesson-menu-toggle" type="button" aria-expanded="false" aria-controls="lesson-menu">
+        <span aria-hidden="true">☰</span>
+        পাঠ তালিকা
+        <span class="lesson-menu-count" id="header-progress">০ / ২৫</span>
+      </button>
+    </div>
+    <nav class="course-nav" aria-label="কোর্সের বিভাগ">
+      <button class="course-nav-button" type="button" data-lesson-start="0">বর্ণ, কার ও ফলা</button>
+      <button class="course-nav-button" type="button" data-lesson-start="15">যুক্তবর্ণ ও ছোট শব্দ</button>
+      <button class="course-nav-button" type="button" data-lesson-start="19">বড় শব্দ ও বাক্য</button>
+      <button class="course-nav-button" type="button" data-lesson-start="25">টাইপিং পরীক্ষা</button>
+    </nav>
+  </header>
+
+  <main class="layout">
+    <aside id="lesson-menu" aria-label="পাঠের তালিকা" hidden>
+      <div class="course-progress">
+        <div class="course-progress-heading">
+          <span>আপনার অগ্রগতি</span>
+          <span id="course-count">০ / ২৫ পাঠ</span>
+        </div>
+        <div class="progress-track" role="progressbar" aria-label="কোর্সের অগ্রগতি" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="progress-fill" id="course-progress"></div>
+        </div>
+        <button class="reset-progress" id="reset-progress" type="button">অগ্রগতি মুছে নতুন করে শুরু</button>
+      </div>
+      <nav class="lesson-list" id="lesson-list"></nav>
+    </aside>
+
+    <section class="lesson-panel" aria-live="polite">
+      <div class="eyebrow" id="lesson-step"></div>
+      <h1 id="lesson-title"></h1>
+      <p class="description" id="lesson-description"></p>
+      <div class="lesson-meta" id="lesson-meta"></div>
+
+      <section class="practice-card" aria-label="কী অনুশীলন">
+        <div class="practice-top">
+          <h2 id="round-title">কী-গুলো চাপুন</h2>
+        </div>
+        <section class="exam-panel" id="exam-panel" hidden aria-label="চূড়ান্ত টাইপিং পরীক্ষা">
+          <div class="exam-intro" id="exam-intro">
+            <p>সময়: ৩ মিনিট। নিচের অনুচ্ছেদটি দেখে টাইপ করুন। সঠিক বাংলা শব্দের গতি, নির্ভুলতা, ভুল এবং মোট স্কোর শেষে দেখানো হবে। প্রতিবার নতুন বিষয় বেছে নেওয়া হবে।</p>
+            <label class="exam-name-label" for="exam-student-name">সার্টিফিকেটে নাম (ঐচ্ছিক)</label>
+            <input id="exam-student-name" type="text" maxlength="60" autocomplete="name" placeholder="শিক্ষার্থী">
+            <button class="button" id="exam-start" type="button">পরীক্ষা শুরু করুন</button>
+          </div>
+          <div class="exam-active" id="exam-active" hidden>
+            <div class="exam-heading">
+              <span>বিষয়: <strong id="exam-topic"></strong></span>
+              <div class="exam-timer" id="exam-timer" role="timer" aria-label="বাকি সময় তিন মিনিট">
+                <svg class="exam-timer-ring" viewBox="0 0 100 100" aria-hidden="true">
+                  <circle class="exam-timer-track" cx="50" cy="50" r="44"></circle>
+                  <circle class="exam-timer-progress" id="exam-timer-progress" cx="50" cy="50" r="44"></circle>
+                </svg>
+                <span class="exam-timer-content">
+                  <span class="exam-timer-caption">বাকি সময়</span>
+                  <strong id="exam-countdown">০৩:০০</strong>
+                </span>
+              </div>
+            </div>
+            <p class="exam-passage" id="exam-passage" tabindex="-1"></p>
+            <div class="exam-live-stats" aria-label="পরীক্ষার বর্তমান পরিসংখ্যান">
+              <span>শব্দ/মিনিট: <strong id="exam-live-wpm">০</strong></span>
+              <span>নির্ভুলতা: <strong id="exam-live-accuracy">১০০%</strong></span>
+              <span>ভুল: <strong id="exam-live-errors">০</strong></span>
+            </div>
+            <div class="exam-typed" id="exam-typed" aria-label="টাইপ করা লেখা"></div>
+            <p class="exam-hint" id="exam-hint">কম্পিউটারের বিজয় কিবোর্ড লেআউটে অনুচ্ছেদটি টাইপ করুন। ভুল হলে ঠিক করে আবার লিখুন; ঘড়ি চলবে।</p>
+          </div>
+          <div class="exam-result" id="exam-result" hidden>
+            <h3 id="exam-result-title">পরীক্ষা শেষ</h3>
+            <p id="exam-result-topic"></p>
+            <div class="exam-result-stats">
+              <div><strong id="exam-result-wpm">০</strong><span>বাংলা শব্দ/মিনিট</span></div>
+              <div><strong id="exam-result-accuracy">০%</strong><span>নির্ভুলতা</span></div>
+              <div><strong id="exam-result-errors">০</strong><span>ভুলের সংখ্যা</span></div>
+              <div><strong id="exam-result-score">০</strong><span>মোট স্কোর</span></div>
+            </div>
+            <p class="exam-score-note">মোট স্কোর = বাংলা শব্দ/মিনিট × নির্ভুলতা। সম্পূর্ণ টাইপ করা শব্দ গতি গণনায় ধরা হয়।</p>
+            <div class="controls">
+              <button class="button" id="exam-print" type="button">সার্টিফিকেট প্রিন্ট করুন</button>
+              <button class="button secondary" id="exam-again" type="button">নতুন পরীক্ষা দিন</button>
+            </div>
+          </div>
+        </section>
+        <div class="exercise-navigation" aria-label="অনুশীলনের মধ্যে চলাচল">
+          <button class="round-button" id="previous-round" type="button">← আগের অনুশীলন</button>
+          <span class="round-indicator" id="round-indicator"></span>
+          <button class="round-button next-round" id="next-round" type="button">পরের অনুশীলন →</button>
+        </div>
+        <div class="target-keys" id="target-keys" aria-label="চাপার জন্য কী-গুলো"></div>
+        <div class="feedback" id="feedback" aria-live="assertive">কম্পিউটারের ফিজিক্যাল কিবোর্ডে দেখানো কী চাপুন।</div>
+        <div class="typed-preview" id="typed-preview" aria-label="আপনার অক্ষর"></div>
+        <div class="session-stats" aria-label="এই অনুশীলনের পরিসংখ্যান">
+          <div class="session-stat"><strong id="session-time">০০:০০</strong><span>সময়</span></div>
+          <div class="session-stat"><strong id="session-accuracy">১০০%</strong><span>নির্ভুলতা</span></div>
+          <div class="session-stat"><strong id="session-speed">০</strong><span>সঠিক কী/মিনিট</span></div>
+        </div>
+
+        <div class="keyboard-wrap">
+          <div class="keyboard-caption">
+            <span>কিবোর্ডের অবস্থান — ভুল কী লাল দেখাবে</span>
+            <span>কম্পিউটারের কিবোর্ডে টাইপ করুন</span>
+          </div>
+          <div class="keyboard" id="keyboard" aria-label="কম্পিউটার কিবোর্ডের অবস্থান"></div>
+        </div>
+        <div class="controls">
+          <button class="button secondary" id="restart" type="button">এই অনুশীলন আবার করুন</button>
+          <button class="button" id="next-lesson" type="button" hidden>পরের পাঠে যান</button>
+        </div>
+        <div class="completion" id="completion" role="status">
+          <strong>দারুণ! এই পাঠ শেষ করেছেন।</strong>
+          <span id="completion-message">পরের পাঠে যেতে প্রস্তুত হলে “পরের পাঠে যান” চাপুন। আপনার অগ্রগতি এই ব্রাউজারে সংরক্ষিত থাকবে।</span>
+        </div>
+      </section>
+      <p class="footer-note">এটি কম্পিউটারে বিজয় বায়ান্ন টাইপিং শেখার অনুশীলন। আগে কম্পিউটারে বিজয় বায়ান্ন কিবোর্ড লেআউট চালু করুন, তারপর নিজের ফিজিক্যাল কিবোর্ডে দেখানো কী চাপুন। Shift-সহ কী হলে Shift ধরে সেই কী চাপুন। Ctrl, Shift, Enter ও Backspace-সহ নিচের কিবোর্ডে চাপা কী-র অবস্থান ও ভুলের সংকেত দেখা যাবে।</p>
+    </section>
+  </main>
+
+  <section class="certificate" id="exam-certificate" hidden aria-label="টাইপিং পরীক্ষার সার্টিফিকেট">
+    <div class="certificate-inner">
+      <img class="certificate-mark" src="Img/skill%20development%20course%202026%20(4)-02.png" alt="">
+      <p class="certificate-kicker">বিজয় বায়ান্ন · বাংলা টাইপিং অনুশীলন</p>
+      <h1>টাইপিং পরীক্ষার সার্টিফিকেট</h1>
+      <p>এই মর্মে প্রত্যয়ন করা যাচ্ছে যে</p>
+      <h2 id="certificate-name">শিক্ষার্থী</h2>
+      <p><span id="certificate-topic"></span> বিষয়ে তিন মিনিটের নির্ধারিত বাংলা টাইপিং পরীক্ষা সম্পন্ন করেছেন।</p>
+      <div class="certificate-stats">
+        <span>গতি<strong id="certificate-wpm"></strong> শব্দ/মিনিট</span>
+        <span>নির্ভুলতা<strong id="certificate-accuracy"></strong></span>
+        <span>ভুল<strong id="certificate-errors"></strong></span>
+        <span>মোট স্কোর<strong id="certificate-score"></strong></span>
+      </div>
+      <p class="certificate-date" id="certificate-date"></p>
+    </div>
+  </section>
+
+  <section class="completion-banner-overlay" id="completion-banner-overlay" aria-label="অভিনন্দন ব্যানার" aria-hidden="true" hidden>
+    <button class="completion-banner-close" id="completion-banner-close" type="button" aria-label="ব্যানার বন্ধ করুন">×</button>
+    <img class="completion-banner-image" src="Img/skill development course 2026-01 (2).png" alt="স্কিল ডেভেলপমেন্ট কোর্স ২০২৬ — অভিনন্দন">
+  </section>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
