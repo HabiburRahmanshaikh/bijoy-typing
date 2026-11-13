@@ -1522,6 +1522,11 @@ const keyInfo = {
 
     document.addEventListener("keydown", event => {
       if (event.repeat || event.altKey || event.metaKey) return;
+      const eventTarget = event.target;
+      if (eventTarget instanceof Element) {
+        const editableTarget = eventTarget.closest("input, textarea, select, [role='textbox']");
+        if (editableTarget || eventTarget.isContentEditable) return;
+      }
       if (event.code === "ShiftLeft" || event.code === "ShiftRight") {
         if (lessons[activeLesson].exam) {
           if (examState && !examState.finished) {
