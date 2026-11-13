@@ -1033,6 +1033,7 @@ const keyInfo = {
         targetIndex: 0,
         stepIndex: 0,
         output: "",
+        typingEventsByTarget: topic.targets.map(() => []),
         attempts: 0,
         correctKeys: 0,
         errors: 0,
@@ -1076,6 +1077,38 @@ const keyInfo = {
       });
     }
 
+    function renderExamTyping() {
+      examTyped.replaceChildren();
+      const appendText = (className, text) => {
+        const fragment = document.createElement("span");
+        fragment.className = className;
+        fragment.textContent = text;
+        examTyped.appendChild(fragment);
+      };
+
+      for (let index = 0; index < examState.targetIndex; index += 1) {
+        const events = examState.typingEventsByTarget[index];
+        let lastCorrectEvent = -1;
+        events.forEach((event, eventIndex) => {
+          if (event.type === "correct") lastCorrectEvent = eventIndex;
+        });
+        events.forEach((event, eventIndex) => {
+          if (event.type === "error") {
+            appendText("exam-typed-error", event.output);
+          } else if (eventIndex === lastCorrectEvent) {
+            appendText("exam-typed-complete", examState.targets[index].output);
+          }
+        });
+      }
+
+      const currentTarget = examState.targets[examState.targetIndex];
+      if (currentTarget) {
+        examState.typingEventsByTarget[examState.targetIndex].forEach(event => {
+          appendText(event.type === "error" ? "exam-typed-error" : "exam-typed-pending", event.output);
+        });
+      }
+    }
+
     function getExamMetrics(state) {
       const elapsedSeconds = Math.max(1, Math.min(examDurationSeconds, (Date.now() - state.startedAt) / 1000));
       const words = state.output.trim().split(/\s+/u).filter(Boolean).length;
@@ -1106,11 +1139,7 @@ const keyInfo = {
       examLiveAccuracy.textContent = toBengaliDigits(metrics.accuracy) + "%";
       examLiveErrors.textContent = toBengaliDigits(examState.errors);
       const expectedKey = examState.targets[examState.targetIndex]?.keys[examState.stepIndex];
-      const currentTarget = examState.targets[examState.targetIndex];
-      const pendingOutput = currentTarget && currentTarget.keys.length > 1
-        ? currentTarget.keys.slice(0, examState.stepIndex).map(keyId => keyInfo[keyId].output).join("")
-        : "";
-      renderTypingOutput(examTyped, examState.output, pendingOutput);
+      renderExamTyping();
       keyboard.querySelectorAll(".visual-key").forEach(button => button.classList.remove("is-current"));
       if (expectedKey) markCurrentKeyboardKey(expectedKey);
     }
@@ -1122,6 +1151,7 @@ const keyInfo = {
       examState.finished = true;
       examState.finishedAt = Date.now();
       updateExamPassageProgress();
+      renderExamTyping();
       playExamSound("finish");
       const metrics = getExamMetrics(examState);
       const displayValues = {
@@ -1160,6 +1190,10 @@ const keyInfo = {
         errorOutput.className = "exam-passage-error";
         errorOutput.textContent = keyInfo[keyId].output;
         examPassage.querySelectorAll(".exam-passage-target")[examState.targetIndex].appendChild(errorOutput);
+        examState.typingEventsByTarget[examState.targetIndex].push({
+          type: "error",
+          output: keyInfo[keyId].output
+        });
         examHint.textContent = "ভুল কী চাপা হয়েছে। ভুল: " + toBengaliDigits(examState.errors) + "। নীল কী-টি চাপুন: " + expectedKeyLabelForExam() + "।";
         updateExamStats();
         return;
@@ -1167,6 +1201,10 @@ const keyInfo = {
       examState.correctKeys += 1;
       playExamSound("correct");
       flashKeyboardKey(keyInfo[keyId].code, "is-pressed");
+      examState.typingEventsByTarget[examState.targetIndex].push({
+        type: "correct",
+        output: keyInfo[keyId].output
+      });
       examState.stepIndex += 1;
       if (examState.stepIndex === target.keys.length) {
         examState.output += target.output;

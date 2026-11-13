@@ -409,6 +409,9 @@
     .exam-live-stats { display: flex; flex-wrap: wrap; gap: 10px 20px; margin: 12px 0; color: #69768a; font-size: .88rem; }
     .exam-live-stats strong { color: #245bd3; }
     .exam-typed { min-height: 76px; max-height: 180px; overflow: auto; padding: 12px 14px; border: 1px solid #badcc8; border-radius: 17px; background: linear-gradient(130deg, #e1f0e7, #edf4ed); color: #164a32; font-size: 1.03rem; line-height: 1.9; white-space: pre-wrap; overflow-wrap: anywhere; box-shadow: inset 0 2px 5px #07572b0c; }
+    .exam-typed-complete { color: #17643d; }
+    .exam-typed-pending { border-bottom: 2px dashed #d87920; border-radius: 4px 4px 0 0; background: #ffe4c766; color: #a64c08; }
+    .exam-typed-error { border-radius: 3px; background: #f8dada; color: #b42323; text-decoration: underline wavy #d64545; text-underline-offset: 3px; }
     .exam-hint { margin: 9px 0 0; color: #778398; font-size: .84rem; line-height: 1.6; }
     .exam-result h3 { margin: 0 0 5px; color: #17643d; }
     .exam-result > p { margin: 6px 0 14px; color: #68758a; }
