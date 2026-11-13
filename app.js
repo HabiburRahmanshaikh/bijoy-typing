@@ -1185,14 +1185,11 @@ const keyInfo = {
         const removedEvent = events.pop();
         if (!removedEvent) continue;
 
-        examState.attempts = Math.max(0, examState.attempts - 1);
         if (removedEvent.type === "error") {
-          examState.errors = Math.max(0, examState.errors - 1);
           const passageErrors = examPassage.querySelectorAll(".exam-passage-target")[targetIndex]
             .querySelectorAll(".exam-passage-error");
           passageErrors[passageErrors.length - 1]?.remove();
         } else {
-          examState.correctKeys = Math.max(0, examState.correctKeys - 1);
           examState.targetIndex = targetIndex;
           examState.stepIndex = events.filter(event => event.type === "correct").length;
           examState.output = examState.targets
