@@ -1177,6 +1177,39 @@ const keyInfo = {
       showCompletionBanner();
     }
 
+    function handleExamBackspace() {
+      if (!examState || examState.finished) return;
+
+      for (let targetIndex = examState.targetIndex; targetIndex >= 0; targetIndex -= 1) {
+        const events = examState.typingEventsByTarget[targetIndex];
+        const removedEvent = events.pop();
+        if (!removedEvent) continue;
+
+        examState.attempts = Math.max(0, examState.attempts - 1);
+        if (removedEvent.type === "error") {
+          examState.errors = Math.max(0, examState.errors - 1);
+          const passageErrors = examPassage.querySelectorAll(".exam-passage-target")[targetIndex]
+            .querySelectorAll(".exam-passage-error");
+          passageErrors[passageErrors.length - 1]?.remove();
+        } else {
+          examState.correctKeys = Math.max(0, examState.correctKeys - 1);
+          examState.targetIndex = targetIndex;
+          examState.stepIndex = events.filter(event => event.type === "correct").length;
+          examState.output = examState.targets
+            .slice(0, targetIndex)
+            .map(target => target.output)
+            .join("");
+        }
+
+        updateExamPassageProgress();
+        updateExamStats();
+        examHint.textContent = "অক্ষরটি মুছে দেওয়া হয়েছে। এখন " + expectedKeyLabelForExam() + " চাপুন।";
+        return;
+      }
+
+      examHint.textContent = "মুছে দেওয়ার মতো কোনো অক্ষর নেই। এখন " + expectedKeyLabelForExam() + " চাপুন।";
+    }
+
     function handleExamKey(keyId) {
       if (!examState || examState.finished) return;
       const target = examState.targets[examState.targetIndex];
@@ -1587,6 +1620,11 @@ const keyInfo = {
             feedback.textContent = "Shift ধরে রাখুন, তারপর " + keyInfo[keyId].letter + " কী চাপুন।";
           }
         }
+        return;
+      }
+      if (lessons[activeLesson].exam && event.code === "Backspace" && !event.ctrlKey) {
+        event.preventDefault();
+        handleExamBackspace();
         return;
       }
       const matchingKey = Object.keys(keyInfo).find(keyId =>
